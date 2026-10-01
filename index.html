@@ -606,7 +606,6 @@ footer { background: #333; color: #EDEDED; padding-block: 44px 28px; font-size: 
     <button class="app-overlay-close" type="button" data-close-app>← ホームページに戻る</button>
     <span class="app-overlay-title">あんざん★トレーニング</span>
   </div>
-  <iframe id="appOverlayFrame" title="あんざん★トレーニング（全画面）"></iframe>
 </div>
 
 <footer>
@@ -637,10 +636,14 @@ footer { background: #333; color: #EDEDED; padding-block: 44px 28px; font-size: 
   if (mq.addEventListener) mq.addEventListener('change', loadInline);
 
   var overlay = document.getElementById('appOverlay');
-  var frame = document.getElementById('appOverlayFrame');
+  var frame = null;
   var opened = false;
   function open() {
-    if (!frame.src) frame.src = APP;
+    // 開くたびに新しく読み込む
+    frame = document.createElement('iframe');
+    frame.title = 'あんざん★トレーニング（全画面）';
+    frame.src = APP;
+    overlay.appendChild(frame);
     overlay.hidden = false;
     document.documentElement.style.overflow = 'hidden';
     opened = true;
@@ -649,6 +652,8 @@ footer { background: #333; color: #EDEDED; padding-block: 44px 28px; font-size: 
   function close(fromPop) {
     if (!opened) return;
     opened = false;
+    // アプリを終了させて、音やタイマーを止める
+    if (frame) { frame.remove(); frame = null; }
     overlay.hidden = true;
     document.documentElement.style.overflow = '';
     var anchor = document.getElementById('anzan');

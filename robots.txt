@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
 
+# 教室内向けのツール（検索に出さない）
+Disallow: /posting-tracker/
+Disallow: /shift-management/
+Disallow: /Working-station/
+
 Sitemap: https://schoolofhowtolearn.github.io/sitemap.xml

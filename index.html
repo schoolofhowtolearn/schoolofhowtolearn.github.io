@@ -643,6 +643,7 @@ footer { background: #333; color: #EDEDED; padding-block: 44px 28px; font-size: 
     frame = document.createElement('iframe');
     frame.title = 'あんざん★トレーニング（全画面）';
     frame.src = APP;
+    frame.addEventListener('load', setupFit);
     overlay.appendChild(frame);
     overlay.hidden = false;
     document.documentElement.style.overflow = 'hidden';
@@ -659,6 +660,38 @@ footer { background: #333; color: #EDEDED; padding-block: 44px 28px; font-size: 
     var anchor = document.getElementById('anzan');
     if (anchor) anchor.scrollIntoView({ block: 'start' });
     if (!fromPop) { try { history.back(); } catch (e) {} }
+  }
+  // 問題をとく画面のときは、画面全体が1画面に収まるように倍率を合わせる
+  function setupFit() {
+    var doc;
+    try { doc = frame.contentDocument; } catch (e) { return; }
+    if (!doc || !doc.getElementById('quiz-screen')) return;
+    var cur = frame;
+    var lastQuiz = null;
+    function fit() {
+      if (cur !== frame || !frame) return;
+      var html = doc.documentElement;
+      var quiz = doc.getElementById('quiz-screen');
+      var wrap = doc.querySelector('.wrap');
+      if (!quiz || !wrap) return;
+      var isQuiz = quiz.classList.contains('active');
+      if (!isQuiz) { html.style.zoom = ''; return; }
+      var z = parseFloat(html.style.zoom) || 1;
+      for (var i = 0; i < 4; i++) {
+        var h = wrap.offsetTop + wrap.offsetHeight - 36;   // 下の余白を少し除く
+        var nz = Math.max(0.55, Math.min(1, frame.clientHeight / h));
+        if (Math.abs(nz - z) < 0.005) break;
+        z = nz;
+        html.style.zoom = z === 1 ? '' : String(z);
+      }
+      try { frame.contentWindow.scrollTo(0, 0); } catch (e) {}
+    }
+    new MutationObserver(function () {
+      var q = doc.getElementById('quiz-screen').classList.contains('active');
+      if (q !== lastQuiz) { lastQuiz = q; fit(); }
+    }).observe(doc.body, { attributes: true, attributeFilter: ['class'], subtree: true });
+    window.addEventListener('resize', function () { lastQuiz = null; fit(); });
+    fit();
   }
   document.querySelectorAll('[data-open-app]').forEach(function (b) { b.addEventListener('click', open); });
   document.querySelectorAll('[data-close-app]').forEach(function (b) { b.addEventListener('click', function () { close(false); }); });

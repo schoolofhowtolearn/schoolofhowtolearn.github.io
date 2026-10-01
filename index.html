@@ -233,11 +233,26 @@ section.gray { background: var(--bg-gray); }
 .try-text .btn { justify-self: start; margin-top: 6px; }
 .try-frame { background: var(--ink); border-radius: 28px; padding: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
 .try-frame iframe { display: block; width: 100%; height: 700px; border: 0; border-radius: 18px; background: #fff; }
+.try-start { display: none; }
 @media (max-width: 900px) {
   .try { grid-template-columns: 1fr; padding: 24px 18px; gap: 24px; }
   .try-frame { max-width: 420px; width: 100%; margin-inline: auto; padding: 8px; border-radius: 22px; }
-  .try-frame iframe { height: 640px; border-radius: 16px; }
+  .try-frame .try-inline { display: none; }
+  .try-start { display: grid; gap: 16px; justify-items: center; width: 100%; padding: 32px 20px; border: 0; border-radius: 16px; cursor: pointer; font-family: var(--font-body); color: var(--ink);
+    background: linear-gradient(135deg, #E3F7FB 0%, #FCE7F1 55%, #FFF4D6 100%); }
+  .try-start-title { font-size: 1.35rem; font-weight: 700; }
+  .try-start-ops { display: flex; gap: 10px; }
+  .try-start-ops i { font-style: normal; font-weight: 700; font-size: 1.3rem; width: 48px; height: 48px; display: grid; place-items: center; border-radius: 12px; border: 2px solid var(--ink); background: #fff; }
+  .try-start-btn { background: var(--orange); color: #fff; font-weight: 700; border-radius: 999px; padding: 12px 28px; font-size: 1.05rem; }
+  .try-start-note { font-size: .8rem; color: var(--ink-soft); line-height: 1.6; }
+  .try-text .btn { display: none; }
 }
+.app-overlay { position: fixed; inset: 0; z-index: 100; background: #fff; display: flex; flex-direction: column; }
+.app-overlay[hidden] { display: none; }
+.app-overlay-bar { flex: none; display: flex; align-items: center; gap: 12px; padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px; background: var(--ink); color: #fff; }
+.app-overlay-close { flex: none; font-family: var(--font-body); font-weight: 700; font-size: .95rem; color: var(--ink); background: var(--orange); border: 0; border-radius: 999px; padding: 9px 16px; cursor: pointer; }
+.app-overlay-title { font-size: .85rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app-overlay iframe { flex: 1; width: 100%; border: 0; padding-bottom: env(safe-area-inset-bottom, 0px); }
 
 /* room */
 .photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
@@ -511,7 +526,13 @@ footer { background: #333; color: #EDEDED; padding-block: 44px 28px; font-size: 
           <a class="btn btn-outline" href="https://schoolofhowtolearn.github.io/anzan-training/" target="_blank" rel="noopener">大きな画面で開く</a>
         </div>
         <div class="try-frame">
-          <iframe src="https://schoolofhowtolearn.github.io/anzan-training/" title="あんざん★トレーニング" loading="lazy"></iframe>
+          <iframe class="try-inline" data-src="https://schoolofhowtolearn.github.io/anzan-training/" title="あんざん★トレーニング"></iframe>
+          <button class="try-start" type="button" data-open-app>
+            <span class="try-start-title">あんざん★トレーニング</span>
+            <span class="try-start-ops" aria-hidden="true"><i>＋</i><i>－</i><i>×</i><i>÷</i></span>
+            <span class="try-start-btn">▶ アプリをはじめる</span>
+            <span class="try-start-note">全画面で開きます。上の「ホームページに戻る」で、いつでもこのページに戻れます。</span>
+          </button>
         </div>
       </div>
     </div>
@@ -580,6 +601,14 @@ footer { background: #333; color: #EDEDED; padding-block: 44px 28px; font-size: 
   </div>
 </main>
 
+<div class="app-overlay" id="appOverlay" hidden role="dialog" aria-modal="true" aria-label="あんざん★トレーニング">
+  <div class="app-overlay-bar">
+    <button class="app-overlay-close" type="button" data-close-app>← ホームページに戻る</button>
+    <span class="app-overlay-title">あんざん★トレーニング</span>
+  </div>
+  <iframe id="appOverlayFrame" title="あんざん★トレーニング（全画面）"></iframe>
+</div>
+
 <footer>
   <div class="wrap foot">
     <div class="foot-top">
@@ -598,6 +627,40 @@ footer { background: #333; color: #EDEDED; padding-block: 44px 28px; font-size: 
   </div>
 </footer>
 
+<script>
+(function () {
+  var APP = 'https://schoolofhowtolearn.github.io/anzan-training/';
+  var mq = window.matchMedia('(max-width: 900px)');
+  var inline = document.querySelector('.try-inline');
+  function loadInline() { if (!mq.matches && inline && !inline.src) inline.src = inline.dataset.src; }
+  loadInline();
+  if (mq.addEventListener) mq.addEventListener('change', loadInline);
+
+  var overlay = document.getElementById('appOverlay');
+  var frame = document.getElementById('appOverlayFrame');
+  var opened = false;
+  function open() {
+    if (!frame.src) frame.src = APP;
+    overlay.hidden = false;
+    document.documentElement.style.overflow = 'hidden';
+    opened = true;
+    try { history.pushState({ app: 1 }, ''); } catch (e) {}
+  }
+  function close(fromPop) {
+    if (!opened) return;
+    opened = false;
+    overlay.hidden = true;
+    document.documentElement.style.overflow = '';
+    var anchor = document.getElementById('anzan');
+    if (anchor) anchor.scrollIntoView({ block: 'start' });
+    if (!fromPop) { try { history.back(); } catch (e) {} }
+  }
+  document.querySelectorAll('[data-open-app]').forEach(function (b) { b.addEventListener('click', open); });
+  document.querySelectorAll('[data-close-app]').forEach(function (b) { b.addEventListener('click', function () { close(false); }); });
+  window.addEventListener('popstate', function () { if (opened) close(true); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && opened) close(false); });
+})();
+</script>
 <script>
 document.querySelectorAll('[data-copy]').forEach(function (btn) {
   btn.addEventListener('click', function () {

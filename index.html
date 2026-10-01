@@ -164,6 +164,11 @@ section.gray { background: var(--bg-gray); }
 .feature p { font-size: .92rem; color: var(--ink-soft); text-align: left; }
 @media (max-width: 860px) { .three { grid-template-columns: 1fr; } }
 
+.features-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.features-grid > :nth-child(-n+3) { grid-column: span 2; }
+.features-grid > :nth-child(n+4) { grid-column: span 3; }
+@media (max-width: 860px) { .features-grid { grid-template-columns: 1fr; } .features-grid > * { grid-column: auto !important; } }
+
 /* teacher */
 .teacher { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 40px; align-items: start; }
 .teacher-photo { text-align: center; display: grid; gap: 6px; }
@@ -372,7 +377,7 @@ footer { background: #333; color: #EDEDED; padding-block: 44px 28px; font-size: 
   <section id="feature" class="gray">
     <div class="wrap">
       <div class="sec-title"><h2>学び方の学校の特長</h2><span class="en">FEATURES</span></div>
-      <div class="three">
+      <div class="three features-grid">
         <article class="card feature">
           <span class="point">POINT 1</span>
           <h3>「学ぶことの意味」の<br>理解と納得</h3>
@@ -385,6 +390,16 @@ footer { background: #333; color: #EDEDED; padding-block: 44px 28px; font-size: 
         </article>
         <article class="card feature">
           <span class="point">POINT 3</span>
+          <h3>社会人がチェックしている<br>「世界の最新情報」を提供</h3>
+          <p>政治、経済、経営、AIやテクノロジーなどの情報を常に収集している教室長から、様々な最新情報を提供し、「勉強と世界とのつながり」を実感してもらいます。</p>
+        </article>
+        <article class="card feature">
+          <span class="point">POINT 4</span>
+          <h3>教室のオリジナル学習アプリで<br>学習をサポート</h3>
+          <p>AIと教室長が開発した学習アプリを生徒さんは無料で利用可能です。<br>生徒さんの興味に応じて、アプリ開発も指導可能です。</p>
+        </article>
+        <article class="card feature">
+          <span class="point">POINT 5</span>
           <h3>指導歴12年の教室長と<br>卒業生講師が学びをサポート</h3>
           <p>宝塚市・川西市で指導歴12年の教室長が、授業を主に担当します。また、この教室で「学び方」を身につけて大学に進んだ卒業生が、講師として授業をサポートします。</p>
         </article>

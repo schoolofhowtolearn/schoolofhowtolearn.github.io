@@ -214,6 +214,23 @@ section.gray { background: var(--bg-gray); }
 .app-list span { color: var(--ink-soft); }
 @media (max-width: 760px) { .app-grid { grid-template-columns: 1fr; } }
 
+/* try app */
+.try { margin-top: 56px; display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 40px; align-items: center; background: var(--orange-soft); border-radius: var(--radius); padding: 36px; }
+.try-text { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.try-text .point { justify-self: start; font-size: .78rem; font-weight: 700; color: #fff; background: var(--orange); border-radius: 999px; padding: 2px 14px; }
+.try-text h3 { font-size: 1.3rem; }
+.try-text p { color: var(--ink-soft); font-size: .95rem; }
+.try-list { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; font-size: .92rem; }
+.try-list li::marker { color: var(--orange); }
+.try-text .btn { justify-self: start; margin-top: 6px; }
+.try-frame { background: var(--ink); border-radius: 28px; padding: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
+.try-frame iframe { display: block; width: 100%; height: 700px; border: 0; border-radius: 18px; background: #fff; }
+@media (max-width: 900px) {
+  .try { grid-template-columns: 1fr; padding: 24px 18px; gap: 24px; }
+  .try-frame { max-width: 420px; width: 100%; margin-inline: auto; padding: 8px; border-radius: 22px; }
+  .try-frame iframe { height: 640px; border-radius: 16px; }
+}
+
 /* room */
 .photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .photos figure { margin: 0; background: var(--bg); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
@@ -265,6 +282,7 @@ footer { background: #333; color: #EDEDED; padding-block: 44px 28px; font-size: 
       <a href="#teacher">講師紹介</a>
       <a href="#course">コース</a>
       <a href="#app">学習アプリ</a>
+      <a href="#anzan">アプリ体験</a>
       <a href="#room">教室</a>
       <a href="#access">アクセス</a>
     </nav>
@@ -455,6 +473,24 @@ footer { background: #333; color: #EDEDED; padding-block: 44px 28px; font-size: 
             <li><b>タイマー</b><span>集中と休憩をくり返すポモドーロにも対応</span></li>
             <li><b>成績・予定</b><span>テストや通知表の記録、予定の管理</span></li>
           </ul>
+        </div>
+      </div>
+
+      <div class="try" id="anzan">
+        <div class="try-text">
+          <span class="point">体験してみよう</span>
+          <h3>あんざん★トレーニング</h3>
+          <p>教室オリジナルの暗算アプリです。このページの上でそのまま遊べます。計算の種類と学年を選んで、時間内にどれだけ正しく解けるかチャレンジしてみてください。</p>
+          <ul class="try-list">
+            <li>たし算・ひき算・かけ算・わり算から選べる</li>
+            <li>学年に合わせたレベルで出題</li>
+            <li>問題数（10・20・30問）と制限時間を設定できる</li>
+            <li>ランキングと、間違えた問題の復習つき</li>
+          </ul>
+          <a class="btn btn-outline" href="https://schoolofhowtolearn.github.io/anzan-training/" target="_blank" rel="noopener">大きな画面で開く</a>
+        </div>
+        <div class="try-frame">
+          <iframe src="https://schoolofhowtolearn.github.io/anzan-training/" title="あんざん★トレーニング" loading="lazy"></iframe>
         </div>
       </div>
     </div>
